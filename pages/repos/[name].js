@@ -1,10 +1,10 @@
 import fetch from 'isomorphic-unfetch'
 
-function repos({ repos }) {
-  return <div>Repo Name: {repos[0].name}</div>
+function repos({ json }) {
+  return <div>Repo Url: {json.url}</div>
 }
 
-export async function getStaticProps() {
+export async function getStaticPaths() {
   const res = await fetch(
     `https://api.github.com/users/${process.env.GITHUB_USER_NAME}/repos?per_page=100`,
     {
@@ -17,9 +17,20 @@ export async function getStaticProps() {
 
   const repos = await res.json();
 
+  const paths = repos.map(repo => `/repos/${repo.name}`)
+
+  return { paths, fallback: false }
+}
+
+export async function getStaticProps({ params }) {
+  const name = params.name
+  const res = await fetch(`https://api.github.com/repos/yotaiyo/${name}`);
+
+  const json = await res.json();
+
   return {
     props: {
-      repos
+      json
     }
   }
 }
