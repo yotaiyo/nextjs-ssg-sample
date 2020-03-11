@@ -25,7 +25,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const name = params.name
   const res = await fetch(
-    `https://api.github.com/repos/yotaiyo/${name}`,
+    `https://api.github.com/repos/${process.env.GITHUB_USER_NAME}/${name}`,
     {
       headers: {
         Authorization: `Bearer ${process.env.GITHUB_API_TOKEN}`,
